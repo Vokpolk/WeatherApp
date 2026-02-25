@@ -13,20 +13,15 @@ class WeatherViewModel {
     // MARK: - Private Properties
     private let weatherService: WeatherService = WeatherService()
     private let locationService: LocationService = LocationService.shared
-    private(set) var model: CurrentWeatherForecastResponse?
+    private(set) var model: WeatherForecastResponse?
     
     private var isFetching = false
     
     // MARK: - Callbacks
     var onLocationRequestStarted: (() -> Void)?
     var onLocationRequestFinished: (() -> Void)?
-    var onWeatherLoaded: ((CurrentWeatherForecastResponse) -> Void)?
+    var onWeatherLoaded: ((WeatherForecastResponse) -> Void)?
     var onError: ((String, String, @escaping () -> Void) -> Void)?
-    
-    // MARK: - Init
-//    init() {
-//        locationService.requestLocation()
-//    }
     
     // MARK: - Public Methods
     func start() {
@@ -42,21 +37,21 @@ class WeatherViewModel {
         onLocationRequestFinished?()
         
         Task {
-            await fetchCurrentWeather(
+            await fetchWeather(
                 with: String(location.coordinate.latitude),
                 and: String(location.coordinate.longitude)
             )
         }
     }
     
-    private func fetchCurrentWeather(with lat: String, and lon: String) async {
+    private func fetchWeather(with lat: String, and lon: String) async {
         guard !isFetching else { return }
         
         isFetching = true
         
         do {
             print("lat: \(lat), lon: \(lon)")
-            model = try await weatherService.fetchCurrentWeather(
+            model = try await weatherService.fetchWeatherForecast(
                 with: lat,
                 and: lon
             )

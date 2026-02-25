@@ -7,10 +7,10 @@
 
 import Foundation
 
-/// текущая погода
-struct CurrentWeatherForecastResponse: Decodable {
+struct WeatherForecastResponse: Decodable {
     let location: Location
-    let current: CurrentWeather
+    let current: Current
+    let forecast: Forecast
 }
 
 struct Location: Decodable {
@@ -19,24 +19,54 @@ struct Location: Decodable {
     let country: String
 }
 
-struct CurrentWeather: Decodable {
+struct Current: Decodable {
     let tempC: Double
     let windKph: Double
     let windDir: String
     
-    enum CodingKeys: String, CodingKey {
+    private enum CodingKeys: String, CodingKey {
         case tempC = "temp_c"
         case windKph = "wind_kph"
         case windDir = "wind_dir"
     }
 }
 
-/// почасовой прогноз погоды
-struct HorlyWeatherForecastResponse {
+struct Forecast: Decodable {
+    let forecastDay: [ForecastDay]
     
+    private enum CodingKeys: String, CodingKey {
+        case forecastDay = "forecastday"
+    }
 }
 
-/// прогноз погоды на 3 дня
-struct ThreeDaysWeatherForecastResponse {
+struct ForecastDay: Decodable {
+    let date: String
+    let day: Day
+    let hour: [Hour]
+}
+
+struct Day: Decodable {
+    let maxTempC: Double
+    let minTempC: Double
+    let maxWindKph: Double
     
+    private enum CodingKeys: String, CodingKey {
+        case maxTempC = "maxtemp_c"
+        case minTempC = "mintemp_c"
+        case maxWindKph = "maxwind_kph"
+    }
+}
+
+struct Hour: Decodable {
+    let time: String
+    let tempC: Double
+    let windKph: Double
+    let windDir: String
+    
+    private enum CodingKeys: String, CodingKey {
+        case time = "time"
+        case tempC = "temp_c"
+        case windKph = "wind_kph"
+        case windDir = "wind_dir"
+    }
 }

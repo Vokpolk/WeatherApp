@@ -19,8 +19,8 @@ class WeatherService {
     private let baseURL = "https://api.weatherapi.com/v1/"
     
     
-    func fetchCurrentWeather(with lat: String, and lon: String) async throws -> CurrentWeatherForecastResponse {
-        let url = URL(string: "\(baseURL)current.json?key=\(apiKey)&q=\(lat),\(lon)")
+    func fetchWeatherForecast(with lat: String, and lon: String) async throws -> WeatherForecastResponse {
+        let url = URL(string: "\(baseURL)forecast.json?key=\(apiKey)&q=\(lat),\(lon)&days=3")
         guard let url else {
             throw WeatherError.invalidURL
         }
@@ -39,7 +39,7 @@ class WeatherService {
             }
             
             do {
-                let decode = try JSONDecoder().decode(CurrentWeatherForecastResponse.self, from: data)
+                let decode = try JSONDecoder().decode(WeatherForecastResponse.self, from: data)
                 return decode
             } catch {
                 throw WeatherError.decodingError
