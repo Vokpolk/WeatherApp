@@ -17,6 +17,14 @@ struct Location: Decodable {
     let name: String
     let region: String
     let country: String
+    let localTime: String
+    
+    private enum CodingKeys: String, CodingKey {
+        case name = "name"
+        case region = "region"
+        case country = "country"
+        case localTime = "localtime"
+    }
 }
 
 struct Current: Decodable {

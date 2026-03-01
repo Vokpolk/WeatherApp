@@ -70,15 +70,26 @@ class WeatherViewModel {
     }
     
     private func updateCellModels(with weather: WeatherForecastResponse) {
+        var isCurrentTime = false
+        var daysCount = 2
         for day in weather.forecast.forecastDay {
-            for hour in day.hour {
-                let tempCell = WeatherCellModel(
-                    date: day.date.toDisplayDate(),
-                    time: hour.time.toDisplayTime(),
-                    tempC: hour.tempC
-                )
-                cellModels.append(tempCell)
+            if daysCount == 0 {
+                break
             }
+            for hour in day.hour {
+                if weather.location.localTime < hour.time {
+                    isCurrentTime = true
+                }
+                if isCurrentTime == true {
+                    let tempCell = WeatherCellModel(
+                        date: day.date.toDisplayDate(),
+                        time: hour.time.toDisplayTime(),
+                        tempC: hour.tempC
+                    )
+                    cellModels.append(tempCell)
+                }
+            }
+            daysCount -= 1
         }
         onCellsUpdated?()
     }

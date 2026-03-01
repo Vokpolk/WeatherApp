@@ -42,7 +42,7 @@ class MainViewController: UIViewController {
         return label
     }()
     
-    private let currentTemp: UILabel = {
+    private let currentTempLabel: UILabel = {
         let label = UILabel()
         label.text = "0"
         label.font = .systemFont(ofSize: 20, weight: .bold)
@@ -68,6 +68,50 @@ class MainViewController: UIViewController {
         return collectionView
     }()
     
+    private let threeDaysForecastLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Прогноз погоды на 3 дня"
+        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .black
+        return label
+    }()
+    
+    private let firstDayLabel: UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .black
+        return label
+    }()
+    
+    private let secondDayLabel: UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .black
+        return label
+    }()
+    
+    private let thirdDayLabel: UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .black
+        return label
+    }()
+    
+    private lazy var threeDaysStack: UIStackView = {
+        let stack = UIStackView(
+            arrangedSubviews: [firstDayLabel, secondDayLabel, thirdDayLabel]
+        )
+        stack.axis = .horizontal
+        stack.distribution = .fillEqually
+        stack.spacing = 10
+        stack.alignment = .center
+        
+        return stack
+    }()
+    
     private let viewModel: WeatherViewModel = WeatherViewModel()
 
     // MARK: - Lifecycles
@@ -87,8 +131,10 @@ class MainViewController: UIViewController {
             countryLabel,
             regionLabel,
             nameLabel,
-            currentTemp,
-            collectionView
+            currentTempLabel,
+            collectionView,
+            threeDaysForecastLabel,
+            threeDaysStack
         ].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
@@ -107,13 +153,19 @@ class MainViewController: UIViewController {
             nameLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             nameLabel.topAnchor.constraint(equalTo: regionLabel.bottomAnchor, constant: 5),
             
-            currentTemp.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            currentTemp.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 50),
+            currentTempLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            currentTempLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 50),
             
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.topAnchor.constraint(equalTo: currentTemp.bottomAnchor, constant: 10),
-            collectionView.heightAnchor.constraint(equalToConstant: 120)
+            collectionView.topAnchor.constraint(equalTo: currentTempLabel.bottomAnchor, constant: 10),
+            collectionView.heightAnchor.constraint(equalToConstant: 120),
+            
+            threeDaysForecastLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            threeDaysForecastLabel.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 20),
+            
+            threeDaysStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            threeDaysStack.topAnchor.constraint(equalTo: threeDaysForecastLabel.bottomAnchor, constant: 20)
         ])
     }
     
@@ -127,14 +179,34 @@ class MainViewController: UIViewController {
             self?.countryLabel.text = weather.location.country
             self?.regionLabel.text = weather.location.region
             self?.nameLabel.text = weather.location.name
-            self?.currentTemp.text = String(format: "Текущая: %.1fC", weather.current.tempC)
+            self?.currentTempLabel.text = String(
+                format: "Текущая: %.1fC", weather.current.tempC
+            )
+            self?.firstDayLabel.text = String(
+                format: "%.1fC : %.1fC",
+                weather.forecast.forecastDay[0].day.minTempC,
+                weather.forecast.forecastDay[0].day.maxTempC
+            )
+            self?.secondDayLabel.text = String(
+                format: "%.1fC : %.1fC",
+                weather.forecast.forecastDay[1].day.minTempC,
+                weather.forecast.forecastDay[1].day.maxTempC
+            )
+            self?.thirdDayLabel.text = String(
+                format: "%.1fC : %.1fC",
+                weather.forecast.forecastDay[2].day.minTempC,
+                weather.forecast.forecastDay[2].day.maxTempC
+            )
         }
         
         viewModel.onLocationRequestStarted = { [weak self] in
             self?.countryLabel.text = ""
             self?.regionLabel.text = ""
             self?.nameLabel.text = ""
-            self?.currentTemp.text = "Определяем твое местоположение..."
+            self?.currentTempLabel.text = "Определяем твое местоположение..."
+            self?.firstDayLabel.text = ""
+            self?.secondDayLabel.text = ""
+            self?.thirdDayLabel.text = ""
         }
         
         viewModel.onCellsUpdated = { [weak self] in
