@@ -15,10 +15,12 @@ enum WeatherError: Error {
 }
 
 class WeatherService {
+    
+    // MARK: - Private Properties
     private let apiKey = ""
     private let baseURL = "https://api.weatherapi.com/v1/"
     
-    
+    // MARK: - Public Methods
     func fetchWeatherForecast(with lat: String, and lon: String) async throws -> WeatherForecastResponse {
         let url = URL(string: "\(baseURL)forecast.json?key=\(apiKey)&q=\(lat),\(lon)&days=3")
         guard let url else {

@@ -10,10 +10,13 @@ import CoreLocation
 
 @MainActor
 class WeatherViewModel {
+    
     // MARK: - Private Properties
     private let weatherService: WeatherService = WeatherService()
     private let locationService: LocationService = LocationService.shared
     private(set) var model: WeatherForecastResponse?
+    
+    private(set) var cellModels: [WeatherCellModel] = []
     
     private var isFetching = false
     
@@ -21,6 +24,7 @@ class WeatherViewModel {
     var onLocationRequestStarted: (() -> Void)?
     var onLocationRequestFinished: (() -> Void)?
     var onWeatherLoaded: ((WeatherForecastResponse) -> Void)?
+    var onCellsUpdated: (() -> Void)?
     var onError: ((String, String, @escaping () -> Void) -> Void)?
     
     // MARK: - Public Methods
@@ -29,7 +33,6 @@ class WeatherViewModel {
         locationService.requestLocation { [weak self] location in
             self?.handleLocation(location)
         }
-        
     }
     
     // MARK: - Private Methods
@@ -55,13 +58,29 @@ class WeatherViewModel {
                 with: lat,
                 and: lon
             )
-            onWeatherLoaded?(model!)
+            guard let model else { return }
+            updateCellModels(with: model)
+            onWeatherLoaded?(model)
         } catch {
             print(error.localizedDescription)
             handleError(error)
         }
         
         isFetching = false
+    }
+    
+    private func updateCellModels(with weather: WeatherForecastResponse) {
+        for day in weather.forecast.forecastDay {
+            for hour in day.hour {
+                let tempCell = WeatherCellModel(
+                    date: day.date.toDisplayDate(),
+                    time: hour.time.toDisplayTime(),
+                    tempC: hour.tempC
+                )
+                cellModels.append(tempCell)
+            }
+        }
+        onCellsUpdated?()
     }
     
     private func handleError(_ error: Error) {

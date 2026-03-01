@@ -9,8 +9,11 @@ import Foundation
 import CoreLocation
 
 class LocationService: NSObject {
+    
+    // MARK: - Static Properties
     static let shared = LocationService()
     
+    // MARK: - Private Properties
     private let locationManager = CLLocationManager()
     private var completion: ((CLLocation) -> Void)?
     
@@ -19,12 +22,14 @@ class LocationService: NSObject {
         longitude: 37.641944
     )
     
+    // MARK: - Init
     private override init() {
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
     }
     
+    // MARK: - Public Methods
     func requestLocation(completion: @escaping (CLLocation) -> Void) {
         self.completion = completion
         
@@ -46,6 +51,8 @@ class LocationService: NSObject {
 }
 
 extension LocationService: CLLocationManagerDelegate {
+    
+    // MARK: - Public Methods
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let status = manager.authorizationStatus
         
