@@ -14,7 +14,7 @@ class MainViewController: UIViewController {
         let label = UILabel()
         label.text = "WeatherApp"
         label.font = .systemFont(ofSize: 20, weight: .bold)
-        label.textColor = .black
+        label.textColor = .white
         return label
     }()
     
@@ -22,7 +22,7 @@ class MainViewController: UIViewController {
         let label = UILabel()
         label.text = ""
         label.font = .systemFont(ofSize: 18, weight: .bold)
-        label.textColor = .black
+        label.textColor = .white
         return label
     }()
     
@@ -30,7 +30,7 @@ class MainViewController: UIViewController {
         let label = UILabel()
         label.text = ""
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .black
+        label.textColor = .white
         return label
     }()
     
@@ -38,7 +38,7 @@ class MainViewController: UIViewController {
         let label = UILabel()
         label.text = ""
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .black
+        label.textColor = .white
         return label
     }()
     
@@ -46,7 +46,7 @@ class MainViewController: UIViewController {
         let label = UILabel()
         label.text = "0"
         label.font = .systemFont(ofSize: 20, weight: .bold)
-        label.textColor = .black
+        label.textColor = .white
         return label
     }()
     
@@ -72,7 +72,7 @@ class MainViewController: UIViewController {
         let label = UILabel()
         label.text = "Прогноз погоды на 3 дня"
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .black
+        label.textColor = .white
         return label
     }()
     
@@ -80,7 +80,7 @@ class MainViewController: UIViewController {
         let label = UILabel()
         label.text = ""
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .black
+        label.textColor = .white
         return label
     }()
     
@@ -88,7 +88,7 @@ class MainViewController: UIViewController {
         let label = UILabel()
         label.text = ""
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .black
+        label.textColor = .white
         return label
     }()
     
@@ -96,7 +96,7 @@ class MainViewController: UIViewController {
         let label = UILabel()
         label.text = ""
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .black
+        label.textColor = .white
         return label
     }()
     
@@ -105,9 +105,17 @@ class MainViewController: UIViewController {
             arrangedSubviews: [firstDayLabel, secondDayLabel, thirdDayLabel]
         )
         stack.axis = .horizontal
-        stack.distribution = .fillEqually
-        stack.spacing = 10
+        stack.distribution = .equalCentering
         stack.alignment = .center
+        stack.isLayoutMarginsRelativeArrangement = true
+        stack.layoutMargins = UIEdgeInsets(
+            top: 0,
+            left: 12,
+            bottom: 0,
+            right: 12
+        )
+        stack.backgroundColor = .lightGray.withAlphaComponent(0.1)
+        stack.layer.cornerRadius = 12
         
         return stack
     }()
@@ -125,7 +133,7 @@ class MainViewController: UIViewController {
 
     // MARK: - Private Methods
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBlue.withAlphaComponent(0.3)
         [
             titleLabel,
             countryLabel,
@@ -156,16 +164,18 @@ class MainViewController: UIViewController {
             currentTempLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             currentTempLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 50),
             
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
             collectionView.topAnchor.constraint(equalTo: currentTempLabel.bottomAnchor, constant: 10),
             collectionView.heightAnchor.constraint(equalToConstant: 120),
             
             threeDaysForecastLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             threeDaysForecastLabel.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 20),
             
-            threeDaysStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            threeDaysStack.topAnchor.constraint(equalTo: threeDaysForecastLabel.bottomAnchor, constant: 20)
+            threeDaysStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            threeDaysStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
+            threeDaysStack.topAnchor.constraint(equalTo: threeDaysForecastLabel.bottomAnchor, constant: 20),
+            threeDaysStack.heightAnchor.constraint(equalToConstant: 120)
         ])
     }
     

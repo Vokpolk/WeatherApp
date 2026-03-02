@@ -72,6 +72,13 @@ class WeatherViewModel {
     private func updateCellModels(with weather: WeatherForecastResponse) {
         var isCurrentTime = false
         var daysCount = 2
+        cellModels.append(
+            WeatherCellModel(
+                date: weather.forecast.forecastDay[0].date.toDisplayDate(),
+                time: "Сейчас",
+                tempC: weather.current.tempC
+            )
+        )
         for day in weather.forecast.forecastDay {
             if daysCount == 0 {
                 break
