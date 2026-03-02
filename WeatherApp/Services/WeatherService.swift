@@ -17,6 +17,7 @@ enum WeatherError: Error {
 class WeatherService {
     
     // MARK: - Private Properties
+    #warning("Insert apiKey before using")
     private let apiKey = ""
     private let baseURL = "https://api.weatherapi.com/v1/"
     
